@@ -1,7 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Image, Text, Pressable } from 'react-native';
 import SplashScreen from '@/components/pages/SplashScreen';
 import { useFonts } from 'expo-font';
+import { router } from 'expo-router';
+import { useSelector, useDispatch } from 'react-redux';
+import { setHasShownSplash } from '@/store';
+// import Login from './(auth)/login';
 
 export default function Index() {
   
@@ -16,28 +20,30 @@ export default function Index() {
     PoppinsExtraBold: require('@/assets/fonts/Poppins-ExtraBold.ttf'),
   })
 
-  const [isLoading, setIsLoading] = useState(true);
+  const dispatch = useDispatch();
+  const hasShownSplash = useSelector((state: any) => state.global.hasShownSplash);
+  const [isLoading, setIsLoading] = useState(!hasShownSplash);
 
-  if (isLoading || !loaded) {
-    return <SplashScreen onFinish={() => setIsLoading(false)} />;
+  useEffect(() => {
+    if (loaded && !hasShownSplash) {
+      const timer = setTimeout(() => {
+        setIsLoading(false);
+        dispatch(setHasShownSplash(true));
+      }, 5000);
+
+      return () => clearTimeout(timer);
+    } else if (hasShownSplash && loaded) {
+      setIsLoading(false);
+    }
+  }, [loaded, hasShownSplash, dispatch]);
+
+  if (isLoading) {
+    return <SplashScreen />;
   }
-  // const [username, setUsername] = useState('');
-  // const [password, setPassword] = useState('');
-
-  // const [ hello ] = useHelloMutation();
-
-  // const handleRegister = async () => {
-  //   try {
-  //     console.log('Registering with:', { username, password });
-  //     const response = await hello({ username, password }).unwrap();
-  //     console.log('Register success:', response);
-  //   } catch (err) {
-  //     console.error('Register error:', err);
-  //   }
-  // };
 
   return (
-    <View className='flex-1 items-center justify-center bg-white'>
+    // <Login/>
+    <View className='flex-1 m-2 items-center justify-center bg-white'>
       <Image
         source={require('@/assets/images/hero-image.png')}
         style={{ width: 300, height: 300 }}
@@ -69,7 +75,7 @@ export default function Index() {
       </Text>
       <Pressable 
         className='mt-14 bg-primary w-[260px] py-3 rounded-full'
-        onPress={() => console.log('Login Pressed')}
+        onPress={() => router.push('/(auth)/login')}
         >
         <Text 
           className='text-white text-center'
