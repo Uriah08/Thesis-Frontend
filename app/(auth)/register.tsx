@@ -1,0 +1,140 @@
+import { View, Text, TextInput, Pressable } from 'react-native'
+import React, { useState } from 'react'
+import { ChevronLeft } from 'lucide-react-native';
+import { router } from 'expo-router';
+
+const Register = () => {
+  const [isFocused, setIsFocused] = useState('');
+
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+
+  const handleRegister = () => {
+    if (validate()) {
+      console.log({
+        username,
+        email,
+        password,
+        confirmPassword,
+        });
+    };
+    }
+
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+
+  const validate = () => {
+    const newErrors: { [key: string]: string } = {};
+
+    if (!username.trim()) newErrors.username = 'Username is required.';
+    if (!email.trim()) {
+      newErrors.email = 'Email is required.';
+    } else if (!/^\S+@\S+\.\S+$/.test(email)) {
+      newErrors.email = 'Enter a valid email.';
+    }
+
+    if (!password) {
+      newErrors.password = 'Password is required.';
+    } else if (password.length < 6) {
+      newErrors.password = 'Password must be at least 6 characters.';
+    }
+
+    if (!confirmPassword) {
+      newErrors.confirmPassword = 'Confirm your password.';
+    } else if (confirmPassword !== password) {
+      newErrors.confirmPassword = 'Passwords do not match.';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  return (
+    <View className='bg-white flex-1'>
+      <ChevronLeft onPress={() => router.push('/')} style={{ marginTop: 50, marginLeft: 30 }} color="black" size={32} />
+        <Text className='mt-10 mx-7 text-3xl' style={{
+          fontFamily: 'PoppinsSemiBold',
+        }}><Text className='text-primary'>Hello!</Text> Register to get started.</Text>
+        <View className='mx-7'>
+          <TextInput
+            className={`rounded-md p-3 mt-20 text-base text-black ${ errors.username ? 'border-[2px] border-error/50': 
+              isFocused === 'username' ? 'border-[2px] border-black' : 'border border-zinc-300'
+            }`}
+            onFocus={() => setIsFocused('username')}
+            onBlur={() => setIsFocused('')}
+            placeholder="Username"
+            placeholderTextColor="#9ca3af"
+            value={username}
+            onChangeText={setUsername}
+          />
+            {errors.username && (
+            <Text className="text-error mt-1 ml-1 text-sm">{errors.username}</Text>
+            )}
+        <TextInput
+          className={`rounded-md p-3 mt-5 text-base text-black ${ errors.email ? 'border-[2px] border-error/50':
+            isFocused === 'email' ? 'border-[2px] border-black' : 'border border-zinc-300'
+          }`}
+          onFocus={() => setIsFocused('email')}
+          onBlur={() => setIsFocused('')}
+          placeholder="Email"
+          textContentType='emailAddress'
+          placeholderTextColor="#9ca3af"
+          value={email}
+          onChangeText={setEmail}
+        />
+        {errors.email && (
+          <Text className="text-error mt-1 ml-1 text-sm">{errors.email}</Text>
+        )}
+        <TextInput
+          className={`rounded-md p-3 mt-5 text-base text-black ${ errors.password ? 'border-[2px] border-error/50':
+            isFocused === 'password' ? 'border-[2px] border-black' : 'border border-zinc-300'
+          }`}
+          onFocus={() => setIsFocused('password')}
+          onBlur={() => setIsFocused('')}
+          placeholder="Password"
+          textContentType='password'
+          secureTextEntry={true}
+          placeholderTextColor="#9ca3af"
+          value={password}
+          onChangeText={setPassword}
+        />
+        {errors.password && (
+          <Text className="text-error mt-1 ml-1 text-sm">{errors.password}</Text>
+        )}
+        <TextInput
+          className={`rounded-md p-3 mt-5 text-base text-black ${ errors.confirmPassword ? 'border-[2px] border-error/50':
+            isFocused === 'cpassword' ? 'border-[2px] border-black' : 'border border-zinc-300'
+          }`}
+          onFocus={() => setIsFocused('cpassword')}
+          onBlur={() => setIsFocused('')}
+          placeholder="Confirm Password"
+          textContentType='password'
+          secureTextEntry={true}
+          placeholderTextColor="#9ca3af"
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
+        />
+        {errors.confirmPassword && (
+          <Text className="text-error mt-1 ml-1 text-sm">{errors.confirmPassword}</Text>
+        )}
+        <Pressable
+        className='mt-14 w-full bg-primary py-3 rounded-lg'
+        onPress={() => handleRegister()}
+        >
+          <Text 
+            className='text-white text-center'
+            style={{
+              fontFamily: 'PoppinsRegular',
+            }}
+          >Register</Text>
+        </Pressable>
+        <Text 
+        onPress={() => router.push('/(auth)/login')} 
+        className='text-center mt-2'>Don&apos;t have an account? <Text className='text-primary underline'>Sign in</Text></Text>
+        </View>
+    </View>
+  )
+}
+
+export default Register
