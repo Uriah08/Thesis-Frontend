@@ -1,15 +1,7 @@
 import { View, Image } from 'react-native'
-import React, { useEffect } from 'react'
+import React from 'react'
 
-const SplashScreen = ({ onFinish }: { onFinish: () => void }) => {
-
-    useEffect(() => {
-        const timeout = setTimeout(() => {
-          onFinish();
-        }, 3000);
-    
-        return () => clearTimeout(timeout);
-      }, [onFinish]);
+const SplashScreens = () => {
 
   return (
     <View className="flex-1 items-center justify-center bg-white">
@@ -22,4 +14,4 @@ const SplashScreen = ({ onFinish }: { onFinish: () => void }) => {
   )
 }
 
-export default SplashScreen
+export default SplashScreens

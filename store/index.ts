@@ -1,16 +1,19 @@
-// State Management of Redux
-
+// store/globalSlice.ts
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
+  hasShownSplash: false,
 };
 
 export const globalSlice = createSlice({
-    name: "global",
-    initialState,
-    reducers: {}
-})
+  name: "global",
+  initialState,
+  reducers: {
+    setHasShownSplash(state, action) {
+      state.hasShownSplash = action.payload;
+    },
+  },
+});
 
-// eslint-disable-next-line no-empty-pattern
-export const { } = globalSlice.actions
-export default globalSlice.reducer
+export const { setHasShownSplash } = globalSlice.actions;
+export default globalSlice.reducer;
