@@ -5,7 +5,6 @@ import { useFonts } from 'expo-font';
 import { router } from 'expo-router';
 import { useSelector, useDispatch } from 'react-redux';
 import { setHasShownSplash } from '@/store';
-// import Login from './(auth)/login';
 
 export default function Index() {
   
@@ -42,8 +41,7 @@ export default function Index() {
   }
 
   return (
-    // <Login/>
-    <View className='flex-1 m-2 items-center justify-center bg-white'>
+    <View className='flex-1 px-10 items-center justify-center bg-white'>
       <Image
         source={require('@/assets/images/hero-image.png')}
         style={{ width: 300, height: 300 }}
@@ -67,14 +65,14 @@ export default function Index() {
           </Text>
       </Text>
       <Text 
-        className='text-center text-sm px-12 mt-5 text-zinc-500'
+        className='text-center text-sm mt-5 text-zinc-500'
         style={{
           fontFamily: 'PoppinsRegular'
         }}
       >A smart mobile app that uses AI to help sun-dried fish farmers identify which fish are fully dried and ready for harvest.
       </Text>
       <Pressable 
-        className='mt-14 bg-primary w-[260px] py-3 rounded-full'
+        className='mt-14 bg-primary w-full py-3 rounded-full'
         onPress={() => router.push('/(auth)/login')}
         >
         <Text 
@@ -94,8 +92,8 @@ export default function Index() {
         >Or</Text>
       </View>
       <Pressable 
-        className='bg-white w-[258px] py-[10px] rounded-full border border-zinc-300'
-        onPress={() => console.log('Register Pressed')}
+        className='bg-white w-full py-[10px] rounded-full border border-zinc-300'
+        onPress={() => router.push('/(auth)/register')}
         >
         <Text 
           className='text-black text-center'

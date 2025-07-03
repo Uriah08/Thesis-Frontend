@@ -7,14 +7,21 @@ export const api = createApi({
   }),
   tagTypes: [],
   endpoints: (build) => ({
-    hello: build.mutation({
+    login: build.mutation({
       query: (credentials: { username: string; password: string }) => ({
         url: 'login/',
         method: 'POST',
         body: credentials,
       }),
     }),
+    register: build.mutation({
+      query: (userData: { username: string; email: string; password: string; confirmPassword: string }) => ({
+        url: 'login/',
+        method: 'POST',
+        body: userData,
+      }),
+    }),
   }),
 });
 
-export const { useHelloMutation } = api;
+export const { useLoginMutation } = api;
