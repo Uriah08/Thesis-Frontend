@@ -1,0 +1,20 @@
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+
+export const api = createApi({
+  reducerPath: "api",
+  baseQuery: fetchBaseQuery({
+    baseUrl: 'http://192.168.43.157:8000/api/',
+  }),
+  tagTypes: [],
+  endpoints: (build) => ({
+    hello: build.mutation({
+      query: (credentials: { username: string; password: string }) => ({
+        url: 'login/',
+        method: 'POST',
+        body: credentials,
+      }),
+    }),
+  }),
+});
+
+export const { useHelloMutation } = api;
