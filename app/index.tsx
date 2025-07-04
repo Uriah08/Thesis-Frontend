@@ -1,45 +1,7 @@
-import React, { useState, useEffect } from 'react';
 import { View, Image, Text, Pressable } from 'react-native';
-import SplashScreen from '@/components/pages/SplashScreen';
-import { useFonts } from 'expo-font';
 import { router } from 'expo-router';
-import { useSelector, useDispatch } from 'react-redux';
-import { setHasShownSplash } from '@/store';
 
 export default function Index() {
-  
-  const [ loaded ] = useFonts({
-    PoppinsBold: require('@/assets/fonts/Poppins-Bold.ttf'),
-    PoppinsSemiBold: require('@/assets/fonts/Poppins-SemiBold.ttf'),
-    PoppinsMedium: require('@/assets/fonts/Poppins-Medium.ttf'),
-    PoppinsRegular: require('@/assets/fonts/Poppins-Regular.ttf'),
-    PoppinsLight: require('@/assets/fonts/Poppins-Light.ttf'),
-    PoppinsExtraLight: require('@/assets/fonts/Poppins-ExtraLight.ttf'),
-    PoppinsThin: require('@/assets/fonts/Poppins-Thin.ttf'),
-    PoppinsExtraBold: require('@/assets/fonts/Poppins-ExtraBold.ttf'),
-  })
-
-  const dispatch = useDispatch();
-  const hasShownSplash = useSelector((state: any) => state.global.hasShownSplash);
-  const [isLoading, setIsLoading] = useState(!hasShownSplash);
-
-  useEffect(() => {
-    if (loaded && !hasShownSplash) {
-      const timer = setTimeout(() => {
-        setIsLoading(false);
-        dispatch(setHasShownSplash(true));
-      }, 5000);
-
-      return () => clearTimeout(timer);
-    } else if (hasShownSplash && loaded) {
-      setIsLoading(false);
-    }
-  }, [loaded, hasShownSplash, dispatch]);
-
-  if (isLoading) {
-    return <SplashScreen />;
-  }
-
   return (
     <View className='flex-1 px-10 items-center justify-center bg-white'>
       <Image

@@ -1,0 +1,92 @@
+import { Text, Animated } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import SplashScreen from '@/components/pages/SplashScreen';
+import { useFonts } from 'expo-font';
+import { useSelector, useDispatch } from 'react-redux';
+import { setHasShownSplash } from '@/store';
+import NetInfo from '@react-native-community/netinfo';
+
+const Network = ({ children }: { children: React.ReactNode }) => {
+  const [loaded] = useFonts({
+    PoppinsBold: require('@/assets/fonts/Poppins-Bold.ttf'),
+    PoppinsSemiBold: require('@/assets/fonts/Poppins-SemiBold.ttf'),
+    PoppinsMedium: require('@/assets/fonts/Poppins-Medium.ttf'),
+    PoppinsRegular: require('@/assets/fonts/Poppins-Regular.ttf'),
+    PoppinsLight: require('@/assets/fonts/Poppins-Light.ttf'),
+    PoppinsExtraLight: require('@/assets/fonts/Poppins-ExtraLight.ttf'),
+    PoppinsThin: require('@/assets/fonts/Poppins-Thin.ttf'),
+    PoppinsExtraBold: require('@/assets/fonts/Poppins-ExtraBold.ttf'),
+  });
+
+  const dispatch = useDispatch();
+  const hasShownSplash = useSelector((state: any) => state.global.hasShownSplash);
+  const [isLoading, setIsLoading] = useState(!hasShownSplash);
+  const [isConnected, setIsConnected] = useState(true);
+  const slideAnim = useRef(new Animated.Value(-100)).current;
+
+  useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener(state => {
+      const connected = Boolean(state.isConnected) && state.isInternetReachable !== false;
+      setIsConnected(connected);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    if (loaded && !hasShownSplash) {
+      const timer = setTimeout(() => {
+        setIsLoading(false);
+        dispatch(setHasShownSplash(true));
+      }, 5000);
+
+      return () => clearTimeout(timer);
+    } else if (hasShownSplash && loaded) {
+      setIsLoading(false);
+    }
+  }, [loaded, hasShownSplash, dispatch]);
+
+  useEffect(() => {
+    Animated.timing(slideAnim, {
+      toValue: isConnected ? -100 : 0,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+  }, [isConnected, slideAnim]);
+
+  if (isLoading) {
+    return <SplashScreen />;
+  }
+
+  return (
+    <>
+      {children}
+
+      <Animated.View
+        style={{
+          transform: [{ translateY: slideAnim }],
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          backgroundColor: '#dc2626',
+          zIndex: 9999,
+          height: 45,
+          justifyContent: 'flex-end',
+          alignItems: 'center',
+        }}
+      >
+        <Text
+        className='text-white text-center absolute text-sm'
+          style={{
+            fontFamily: 'PoppinsRegular',
+          }}
+        >
+          No Internet Connection
+        </Text>
+      </Animated.View>
+    </>
+  );
+};
+
+export default Network;

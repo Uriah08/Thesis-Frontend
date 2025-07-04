@@ -9,6 +9,7 @@ import {
 import globalReducer from "@/store";
 import { api } from "@/store/api";
 import { setupListeners } from "@reduxjs/toolkit/query";
+import Network from "./network";
 
 import {
   persistStore,
@@ -70,7 +71,9 @@ export default function StoreProvider({
   return (
     <Provider store={storeRef.current}>
       <PersistGate loading={null} persistor={persistor}>
-        {children}
+        <Network>
+          {children}
+        </Network>
       </PersistGate>
     </Provider>
   );
