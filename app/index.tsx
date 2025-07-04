@@ -5,6 +5,7 @@ import { useFonts } from 'expo-font';
 import { router } from 'expo-router';
 import { useSelector, useDispatch } from 'react-redux';
 import { setHasShownSplash } from '@/store';
+import NetInfo from '@react-native-community/netinfo';
 
 export default function Index() {
   
@@ -22,6 +23,17 @@ export default function Index() {
   const dispatch = useDispatch();
   const hasShownSplash = useSelector((state: any) => state.global.hasShownSplash);
   const [isLoading, setIsLoading] = useState(!hasShownSplash);
+  const [isConnected, setIsConnected] = useState(true);
+
+  useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener(state => {
+      setIsConnected(
+        Boolean(state.isConnected) && state.isInternetReachable !== false
+      );
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   useEffect(() => {
     if (loaded && !hasShownSplash) {
