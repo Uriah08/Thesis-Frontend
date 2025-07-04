@@ -15,8 +15,8 @@ export const api = createApi({
       }),
     }),
     register: build.mutation({
-      query: (userData: { username: string; email: string; password: string; confirmPassword: string }) => ({
-        url: 'login/',
+      query: (userData: { username: string; email: string; password: string; confirm_password: string }) => ({
+        url: 'register/',
         method: 'POST',
         body: userData,
       }),
@@ -24,4 +24,7 @@ export const api = createApi({
   }),
 });
 
-export const { useLoginMutation } = api;
+export const { 
+  useLoginMutation,
+  useRegisterMutation
+ } = api;

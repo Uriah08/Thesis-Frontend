@@ -2,6 +2,8 @@ import { View, Text, TextInput, Pressable } from 'react-native'
 import React, { useState } from 'react'
 import { ChevronLeft } from 'lucide-react-native';
 import { router } from 'expo-router';
+import { useRegisterMutation } from '@/store/api';
+import Toast from 'react-native-toast-message';
 
 const Register = () => {
   const [isFocused, setIsFocused] = useState('');
@@ -10,17 +12,35 @@ const Register = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [register, { isLoading }] = useRegisterMutation();
 
   const handleRegister = () => {
     if (validate()) {
-      console.log({
-        username,
-        email,
-        password,
-        confirmPassword,
-        });
-    };
-    }
+        register({ username, email, password, confirm_password: confirmPassword })
+          .unwrap()
+          .then((response) => {
+            Toast.show({
+              type: 'success',
+              text1: 'User Registered Successfully!',
+            });
+            setUsername('')
+            setEmail('')
+            setPassword('')
+            setConfirmPassword('')
+            router.push('/(auth)/login')
+          })
+          .catch((error) => {
+            if (error?.data) {
+          const serverErrors: { [key: string]: string } = {};
+          for (const key in error.data) {
+            serverErrors[key] = error.data[key][0];
+          }
+          setErrors(prev => ({ ...prev, ...serverErrors }));
+        } else {
+          console.log('Unexpected error:', error);
+        }
+          });
+    }}
 
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
@@ -121,13 +141,14 @@ const Register = () => {
         <Pressable
         className='mt-14 w-full bg-primary py-3 rounded-lg'
         onPress={() => handleRegister()}
+        disabled={isLoading}
         >
           <Text 
             className='text-white text-center'
             style={{
               fontFamily: 'PoppinsRegular',
             }}
-          >Register</Text>
+          >{isLoading ? 'Loading...' : 'Register'}</Text>
         </Pressable>
         <Text 
         onPress={() => router.push('/(auth)/login')} 

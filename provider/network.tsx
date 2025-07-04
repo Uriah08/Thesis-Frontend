@@ -5,6 +5,40 @@ import { useFonts } from 'expo-font';
 import { useSelector, useDispatch } from 'react-redux';
 import { setHasShownSplash } from '@/store';
 import NetInfo from '@react-native-community/netinfo';
+import Toast, { BaseToast, ErrorToast } from 'react-native-toast-message';
+
+const toastConfig = {
+  success: (props: any) => (
+    <BaseToast
+      {...props}
+      style={{ borderLeftColor: '#155183', backgroundColor: '#ffffff' }}
+      contentContainerStyle={{ paddingHorizontal: 15 }}
+      text1Style={{
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#000000',
+      }}
+      text2Style={{
+        fontSize: 14,
+        color: '#000000',
+      }}
+    />
+  ),
+error: (props: any) => (
+    <ErrorToast
+      {...props}
+      style={{ borderLeftColor: '#f87171', backgroundColor: '#fef2f2' }}
+      text1Style={{
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#991b1b',
+      }}
+      text2Style={{
+        fontSize: 14,
+        color: '#991b1b',
+      }}
+    />
+  ),}
 
 const Network = ({ children }: { children: React.ReactNode }) => {
   const [loaded] = useFonts({
@@ -85,6 +119,7 @@ const Network = ({ children }: { children: React.ReactNode }) => {
           No Internet Connection
         </Text>
       </Animated.View>
+      <Toast config={toastConfig}/>
     </>
   );
 };

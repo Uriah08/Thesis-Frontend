@@ -2,12 +2,14 @@ import { View, Text, TextInput, Pressable } from 'react-native'
 import React, { useState } from 'react'
 import { ChevronLeft } from 'lucide-react-native';
 import { router } from 'expo-router';
+import { useLoginMutation } from '@/store/api';
 
 const Login = () => {
   const [isFocused, setIsFocused] = useState('');
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [login, { isLoading, isError }] = useLoginMutation();
 
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   
@@ -26,14 +28,15 @@ const Login = () => {
       return Object.keys(newErrors).length === 0;
     };
 
-    const handleRegister = () => {
+    const handleRegister = async () => {
     if (validate()) {
-      console.log({
-        username,
-        password,
-        });
-    };
-    }
+      try {
+        const response = await login({ username, password }).unwrap();
+        console.log('Login successful:', response);
+      } catch (error) {
+        console.log(error);
+      }
+    }}
 
   return (
     <View className='bg-white flex-1'>

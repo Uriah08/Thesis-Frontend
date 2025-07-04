@@ -1,11 +1,9 @@
-import { View, Text } from 'react-native'
+import { Stack } from 'expo-router'
 import React from 'react'
 
 const AppLayout = () => {
   return (
-    <View>
-      <Text>AppLayout</Text>
-    </View>
+    <Stack/>
   )
 }
 
