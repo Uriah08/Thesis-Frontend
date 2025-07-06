@@ -1,7 +1,9 @@
-import { View, Text, TextInput, Pressable } from 'react-native'
+import { View, Text, TextInput, Pressable, ActivityIndicator } from 'react-native'
 import React, { useState } from 'react'
 import { ChevronLeft } from 'lucide-react-native';
 import { router } from 'expo-router';
+import { useRegisterMutation } from '@/store/api';
+import Toast from 'react-native-toast-message';
 
 const Register = () => {
   const [isFocused, setIsFocused] = useState('');
@@ -10,34 +12,65 @@ const Register = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [register, { isLoading }] = useRegisterMutation();
+  const [isValidatingEmail, setIsValidatingEmail] = useState(false);
 
-  const handleRegister = () => {
-    if (validate()) {
-      console.log({
-        username,
-        email,
-        password,
-        confirmPassword,
-        });
-    };
+
+  const handleRegister = async () => {
+    if (await validate()) {
+        register({ 
+          username: username.trim().toLowerCase(), 
+          email: email.trim().toLowerCase(), 
+          password, 
+          confirm_password: confirmPassword 
+        }).unwrap()
+          .then((response) => {
+            Toast.show({
+              type: 'success',
+              text1: 'User Registered Successfully!',
+            });
+            setUsername('')
+            setEmail('')
+            setPassword('')
+            setConfirmPassword('')
+            router.push('/(auth)/login')
+          })
+          .catch((error) => {
+            if (error?.data) {
+          const serverErrors: { [key: string]: string } = {};
+          for (const key in error.data) {
+            serverErrors[key] = error.data[key][0];
+          }
+          setErrors(prev => ({ ...prev, ...serverErrors }));
+        } else {
+          console.log('Unexpected error:', error);
+        }
+          });
     }
+  }
 
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
-  const validate = () => {
+  const validate = async () => {
+    setIsValidatingEmail(true);
+    const emailValidator = await fetch(`https://emailvalidation.abstractapi.com/v1/?api_key=a270cfe23edc4084a9665add430b88c9&email=${email}`)
+    const validatedEmail = await emailValidator.json();
+    setIsValidatingEmail(false);
     const newErrors: { [key: string]: string } = {};
 
     if (!username.trim()) newErrors.username = 'Username is required.';
     if (!email.trim()) {
       newErrors.email = 'Email is required.';
+    } else if (validatedEmail.deliverability !== 'DELIVERABLE') {
+      newErrors.email = 'Email is not deliverable.';
     } else if (!/^\S+@\S+\.\S+$/.test(email)) {
       newErrors.email = 'Enter a valid email.';
     }
 
     if (!password) {
       newErrors.password = 'Password is required.';
-    } else if (password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters.';
+    } else if (password.length < 8) {
+      newErrors.password = 'Password must be at least 8 characters.';
     }
 
     if (!confirmPassword) {
@@ -84,7 +117,7 @@ const Register = () => {
           onChangeText={setEmail}
         />
         {errors.email && (
-          <Text className="text-error mt-1 ml-1 text-sm">{errors.email}</Text>
+          <Text className="text-error mt-1 ml-1 text-sm">{errors.email.charAt(0).toUpperCase() + errors.email.slice(1)}</Text>
         )}
         <TextInput
           className={`rounded-md p-3 mt-5 text-base text-black ${ errors.password ? 'border-[2px] border-error/50':
@@ -121,13 +154,18 @@ const Register = () => {
         <Pressable
         className='mt-14 w-full bg-primary py-3 rounded-lg'
         onPress={() => handleRegister()}
+        disabled={isLoading || isValidatingEmail}
         >
-          <Text 
+          {isLoading || isValidatingEmail ? (
+              <ActivityIndicator className='text-white'/>
+          ) : (
+            <Text 
             className='text-white text-center'
             style={{
               fontFamily: 'PoppinsRegular',
             }}
           >Register</Text>
+          )}
         </Pressable>
         <Text 
         onPress={() => router.push('/(auth)/login')} 

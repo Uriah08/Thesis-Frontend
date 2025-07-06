@@ -1,15 +1,39 @@
-import { View, Text, TextInput, Pressable } from 'react-native'
-import React, { useState } from 'react'
+import { View, Text, TextInput, Pressable, ActivityIndicator } from 'react-native'
+import React, { useState, useEffect } from 'react'
 import { ChevronLeft } from 'lucide-react-native';
 import { router } from 'expo-router';
+import { useLoginMutation } from '@/store/api';
+import Toast from 'react-native-toast-message';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Login = () => {
   const [isFocused, setIsFocused] = useState('');
-
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [login, { isLoading }] = useLoginMutation();
 
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+
+  const [checking, setChecking] = useState(true);
+
+  useEffect(() => {
+    const checkSession = async () => {
+      const token = await AsyncStorage.getItem('accessToken');
+      if (token) {
+        router.replace('/(tabs)/home');
+      } else {
+        setChecking(false);
+      }
+    };
+    checkSession();
+  }, []);
+
+  if (checking) return (
+    <View className='flex-1 items-center justify-center'>
+      <ActivityIndicator/>
+    </View>
+  );
+
   
     const validate = () => {
       const newErrors: { [key: string]: string } = {};
@@ -26,14 +50,54 @@ const Login = () => {
       return Object.keys(newErrors).length === 0;
     };
 
-    const handleRegister = () => {
-    if (validate()) {
-      console.log({
-        username,
+    const handleLogin = async () => {
+    if (!validate()) return;
+
+    try {
+      const response = await login({
+        username: username.trim().toLowerCase(),
         password,
+      }).unwrap();
+
+      await AsyncStorage.setItem('accessToken', response.access);
+      await AsyncStorage.setItem('refreshToken', response.refresh);
+
+      await AsyncStorage.setItem(
+        'user',
+        JSON.stringify({
+          username: response.username,
+          email: response.email || '', 
+          id: response.id || '',
+        })
+      );
+
+      Toast.show({
+        type: 'success',
+        text1: 'User Login Successfully!',
+      });
+
+      setUsername('');
+      setPassword('');
+      router.replace('/(tabs)/home');
+    } catch (error: any) {
+      if (error?.data?.detail) {
+        Toast.show({
+          type: 'error',
+          text1: error.data.detail,
         });
-    };
+      }
+
+      const serverErrors: { [key: string]: string } = {};
+      if (error?.data) {
+        for (const key in error.data) {
+          serverErrors[key] = error.data[key][0];
+        }
+        setErrors((prev) => ({ ...prev, ...serverErrors }));
+      } else {
+        console.log('Unexpected error:', error);
+      }
     }
+  };
 
   return (
     <View className='bg-white flex-1'>
@@ -75,14 +139,18 @@ const Login = () => {
         )}
         <Pressable
         className='mt-14 w-full bg-primary py-3 rounded-lg'
-        onPress={() => handleRegister()}
-        >
+        onPress={() => handleLogin()}
+        disabled={isLoading}
+        >{!isLoading ? (
           <Text 
             className='text-white text-center'
             style={{
               fontFamily: 'PoppinsRegular',
             }}
           >Login</Text>
+        ) : (
+            <ActivityIndicator className='text-white'/>
+        )}
         </Pressable>
         <Text 
         onPress={() => router.push('/(auth)/register')} 
