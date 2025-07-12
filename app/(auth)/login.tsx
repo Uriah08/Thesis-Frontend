@@ -50,7 +50,8 @@ const Login = () => {
           last_name: response.last_name || '',
           birthday: response.birthday || '',
           address: response.address || '',
-          is_complete: response.is_complete || false
+          is_complete: response.is_complete || false,
+          profile_picture: response.profile_picture || '',
         })
       );
 

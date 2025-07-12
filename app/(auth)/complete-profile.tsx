@@ -19,6 +19,7 @@ import { Checkbox } from 'expo-checkbox';
 import Toast from 'react-native-toast-message';
 import useAuthRedirect from '@/components/hooks/useAuthRedirect';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { uploadImageToSupabase } from '@/utils/lib/supabase';
 
 const CompleteProfile = () => {
   const { checking, user } = useAuthRedirect()
@@ -28,7 +29,7 @@ const CompleteProfile = () => {
 
   const [isChecked, setChecked] = useState(false);
   const [completeProfile, {isLoading}] = useCompleteProfileMutation()
-
+  const [supabaseLoading, setSupabaseLoading] = useState(false)
 
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
@@ -43,13 +44,21 @@ const CompleteProfile = () => {
 
   const handleComplete = async () => {
     if (!validate()) return;
+
+    let imageURL = ''
     
     try {
+      if (image) {
+      const uploadedUrl = await uploadImageToSupabase(image, setSupabaseLoading);
+      if (uploadedUrl) imageURL = uploadedUrl;
+    }
+
       const response = await completeProfile({
         first_name: firstName,
         last_name: lastName,
         birthday: formattedDate,
         address,
+        ...(imageURL && { profile_picture: imageURL }),
       }).unwrap();
 
       Toast.show({
@@ -67,7 +76,8 @@ const CompleteProfile = () => {
           last_name: response.last_name || '',
           birthday: response.birthday || '',
           address: response.address || '',
-          is_complete: response.is_complete || false
+          is_complete: response.is_complete || false,
+          profile_picture: response.profile_picture || '',
         })
       );
 
@@ -91,8 +101,11 @@ const CompleteProfile = () => {
       } else {
         console.log('Unexpected error:', error);
       }  
+    } finally {
+      setSupabaseLoading(false);
     }
   }
+
   useFocusEffect(
     useCallback(() => {
       const onBackPress = () => true;
@@ -110,24 +123,16 @@ const CompleteProfile = () => {
       alert('Permission is required to access media library');
       return;
     }
-
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      mediaTypes: ['images'],
       allowsEditing: true,
       quality: 1,
     });
 
     if (!result.canceled) {
-      const uri = result.assets[0].uri;
-      const extension = uri.split('.').pop()?.toLowerCase();
-
-      if (extension === 'jpg' || extension === 'jpeg' || extension === 'png') {
-        setImage(uri);
-      } else {
-        alert('Only JPEG or PNG images are allowed.');
-      }
+      setImage(result.assets[0].uri);
     }
-};
+  };
 
 
   const handleChange = (event: any, selectedDate?: Date) => {
@@ -306,18 +311,19 @@ const CompleteProfile = () => {
         className={`mt-3 w-full py-3 rounded-lg ${
           isChecked ? 'bg-primary' : 'bg-gray-400'
         }`}
-        disabled={!isChecked || isLoading}
+        disabled={!isChecked || isLoading || supabaseLoading}
       >
-        {!isLoading ? (
+        {isLoading || supabaseLoading ? (
+          <ActivityIndicator color="#fff" />
+        ) : (
           <Text
             className="text-white text-center"
             style={{
               fontFamily: 'PoppinsRegular',
             }}
-          >Getting Started
+          >
+            Getting Started
           </Text>
-        ) : (
-          <ActivityIndicator color="#fff" />
         )}
       </Pressable>
       </View>
