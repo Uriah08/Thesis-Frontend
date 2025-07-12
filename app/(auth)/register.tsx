@@ -4,8 +4,10 @@ import { ChevronLeft } from 'lucide-react-native';
 import { router } from 'expo-router';
 import { useRegisterMutation } from '@/store/api';
 import Toast from 'react-native-toast-message';
+import useAuthRedirect from '@/components/hooks/useAuthRedirect';
 
 const Register = () => {
+  const { checking } = useAuthRedirect()
   const [isFocused, setIsFocused] = useState('');
 
   const [username, setUsername] = useState('');
@@ -14,7 +16,6 @@ const Register = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [register, { isLoading }] = useRegisterMutation();
   const [isValidatingEmail, setIsValidatingEmail] = useState(false);
-
 
   const handleRegister = async () => {
     if (await validate()) {
@@ -29,11 +30,11 @@ const Register = () => {
               type: 'success',
               text1: 'User Registered Successfully!',
             });
-            setUsername('')
+            router.push('/(auth)/login')
+                        setUsername('')
             setEmail('')
             setPassword('')
             setConfirmPassword('')
-            router.push('/(auth)/login')
           })
           .catch((error) => {
             if (error?.data) {
@@ -82,6 +83,12 @@ const Register = () => {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
+
+  if (checking) return (
+      <View className='flex-1 items-center justify-center'>
+        <ActivityIndicator size={50}/>
+      </View>
+    );
 
   return (
     <View className='bg-white flex-1'>

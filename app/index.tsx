@@ -1,28 +1,16 @@
 import { View, Image, Text, Pressable, ActivityIndicator } from 'react-native';
 import { router } from 'expo-router';
-import { useState, useEffect } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import useAuthRedirect from '@/components/hooks/useAuthRedirect';
 
 export default function Index() {
-    const [checking, setChecking] = useState(true);
-
-  useEffect(() => {
-    const checkSession = async () => {
-      const token = await AsyncStorage.getItem('accessToken');
-      if (token) {
-        router.replace('/(tabs)/home');
-      } else {
-        setChecking(false);
-      }
-    };
-    checkSession();
-  }, []);
+  const { checking }  = useAuthRedirect();
 
   if (checking) return (
     <View className='flex-1 items-center justify-center'>
-      <ActivityIndicator/>
+      <ActivityIndicator size={50}/>
     </View>
   );
+
   return (
     <View className='flex-1 px-10 items-center justify-center bg-white'>
       <Image
