@@ -6,6 +6,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { setHasShownSplash } from '@/store';
 import NetInfo from '@react-native-community/netinfo';
 import Toast, { BaseToast, ErrorToast } from 'react-native-toast-message';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const toastConfig = {
   success: (props: any) => (
@@ -88,10 +89,29 @@ const Network = ({ children }: { children: React.ReactNode }) => {
     }).start();
   }, [isConnected, slideAnim]);
 
+                                                          const printUser = async () => {
+                                                            try {
+                                                              const storedUser = await AsyncStorage.getItem('user');
+                                                              if (storedUser !== null) {
+                                                                const parsedUser = JSON.parse(storedUser);
+                                                                console.log('User:', parsedUser);
+                                                              } else {
+                                                                console.log('No user found in AsyncStorage.');
+                                                              }
+                                                            } catch (error) {
+                                                              console.error('Error reading user from AsyncStorage:', error);
+                                                            }
+                                                          };
+
+                                                          useEffect(() => {
+                                                            printUser();
+                                                          }, []);
+
+  
   if (isLoading) {
     return <SplashScreen />;
   }
-
+  
   return (
     <>
       {children}

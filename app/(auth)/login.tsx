@@ -1,39 +1,20 @@
 import { View, Text, TextInput, Pressable, ActivityIndicator } from 'react-native'
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { ChevronLeft } from 'lucide-react-native';
 import { router } from 'expo-router';
 import { useLoginMutation } from '@/store/api';
 import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import useAuthRedirect from '@/components/hooks/useAuthRedirect';
 
 const Login = () => {
+  const { checking } = useAuthRedirect();
   const [isFocused, setIsFocused] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [login, { isLoading }] = useLoginMutation();
 
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
-
-  const [checking, setChecking] = useState(true);
-
-  useEffect(() => {
-    const checkSession = async () => {
-      const token = await AsyncStorage.getItem('accessToken');
-      if (token) {
-        router.replace('/(tabs)/home');
-      } else {
-        setChecking(false);
-      }
-    };
-    checkSession();
-  }, []);
-
-  if (checking) return (
-    <View className='flex-1 items-center justify-center'>
-      <ActivityIndicator/>
-    </View>
-  );
-
   
     const validate = () => {
       const newErrors: { [key: string]: string } = {};
@@ -42,8 +23,8 @@ const Login = () => {
   
       if (!password) {
         newErrors.password = 'Password is required.';
-      } else if (password.length < 6) {
-        newErrors.password = 'Password must be at least 6 characters.';
+      } else if (password.length < 8) {
+        newErrors.password = 'Password must be at least 8 characters.';
       }
   
       setErrors(newErrors);
@@ -59,26 +40,36 @@ const Login = () => {
         password,
       }).unwrap();
 
-      await AsyncStorage.setItem('accessToken', response.access);
-      await AsyncStorage.setItem('refreshToken', response.refresh);
-
       await AsyncStorage.setItem(
         'user',
         JSON.stringify({
           username: response.username,
           email: response.email || '', 
           id: response.id || '',
+          first_name: response.first_name || '',
+          last_name: response.last_name || '',
+          birthday: response.birthday || '',
+          address: response.address || '',
+          is_complete: response.is_complete || false
         })
       );
 
+      await AsyncStorage.setItem('authToken', response.token)
+      
       Toast.show({
         type: 'success',
         text1: 'User Login Successfully!',
       });
 
+      if (!response.is_complete) {
+        router.replace('/(auth)/complete-profile')
+      } else {
+        router.replace('/(tabs)/home')
+      }
+
       setUsername('');
       setPassword('');
-      router.replace('/(tabs)/home');
+      
     } catch (error: any) {
       if (error?.data?.detail) {
         Toast.show({
@@ -98,6 +89,12 @@ const Login = () => {
       }
     }
   };
+
+  if (checking) return (
+        <View className='flex-1 items-center justify-center'>
+          <ActivityIndicator size={50}/>
+        </View>
+      );
 
   return (
     <View className='bg-white flex-1'>
@@ -139,7 +136,9 @@ const Login = () => {
         )}
         <Pressable
         className='mt-14 w-full bg-primary py-3 rounded-lg'
-        onPress={() => handleLogin()}
+        onPress={() => 
+          handleLogin()
+        }
         disabled={isLoading}
         >{!isLoading ? (
           <Text 

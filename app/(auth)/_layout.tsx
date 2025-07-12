@@ -15,6 +15,12 @@ const AuthLayout = () => {
             headerShown: false,
             }}
         />
+        <Stack.Screen
+            name="complete-profile"
+            options={{
+            headerShown: false,
+            }}
+        />
     </Stack>
   )
 }
