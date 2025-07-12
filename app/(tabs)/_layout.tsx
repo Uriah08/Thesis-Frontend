@@ -61,42 +61,42 @@ const AppLayout = () => {
         name="farm"
         options={{
           title: 'Farm',
-          headerShown: false,
+          // headerShown: false,
           tabBarIcon: ({ color, size }) => <FishSymbolIcon color={color} size={size} />,
           tabBarButton: (props) => <CustomTabBarButton {...props} />,
         }}
       />
       <Tabs.Screen
-  name="notification"
-  options={{
-    title: 'Notifications',
-    headerShown: false,
-    tabBarIcon: ({ color, size }) => (
-      <View style={{ position: 'relative' }}>
-        <BellIcon color={color} size={size} />
-        <View
-          style={{
-            position: 'absolute',
-            top: -4,
-            right: -4,
-            backgroundColor: 'red',
-            borderRadius: 8,
-            minWidth: 16,
-            height: 16,
-            justifyContent: 'center',
-            alignItems: 'center',
-            paddingHorizontal: 2,
-          }}
-        >
-          <Text style={{ color: 'white', fontSize: 10, fontWeight: 'bold' }}>
-            3
-          </Text>
-        </View>
-      </View>
-    ),
-    tabBarButton: (props) => <CustomTabBarButton {...props} />,
-  }}
-/>
+        name="notification"
+        options={{
+          title: 'Notifications',
+          // headerShown: false,
+          tabBarIcon: ({ color, size }) => (
+            <View style={{ position: 'relative' }}>
+              <BellIcon color={color} size={size} />
+              <View
+                style={{
+                  position: 'absolute',
+                  top: -4,
+                  right: -4,
+                  backgroundColor: 'red',
+                  borderRadius: 8,
+                  minWidth: 16,
+                  height: 16,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  paddingHorizontal: 2,
+                }}
+              >
+                <Text style={{ color: 'white', fontSize: 10, fontWeight: 'bold' }}>
+                  3
+                </Text>
+              </View>
+            </View>
+          ),
+          tabBarButton: (props) => <CustomTabBarButton {...props} />,
+        }}
+      />
       <Tabs.Screen
         name="profile"
         options={{

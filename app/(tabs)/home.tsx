@@ -1,4 +1,4 @@
-import { Text, Pressable, BackHandler, View, ActivityIndicator } from 'react-native'
+import { Text, Pressable, BackHandler, View, ActivityIndicator, Image } from 'react-native'
 import { router } from 'expo-router';
 import { useCallback } from 'react';
 import { ChevronLeft } from 'lucide-react-native';
@@ -54,6 +54,17 @@ const Home = () => {
       <ChevronLeft onPress={() => router.push('/')} style={{ marginTop: 50, marginLeft: 30 }} color="black" size={32} />
       <Text className='text-xl'>Welcome, {user?.first_name}!</Text>
       <Text className='text-xl'>Id, {user?.id} : {user?.email}!</Text>
+      <View className="border-[3px] border-primary mt-10 rounded-full p-1 relative">
+                <Image
+                  source={
+                    user?.profile_picture
+                      ? { uri: user?.profile_picture }
+                      : require('@/assets/images/default-profile.png')
+                  }
+                  style={{ width: 80, height: 80, borderRadius: 999 }}
+                  resizeMode="cover"
+                />
+              </View>
       <Text onPress={() => handleLogout()} className="text-red-500 font-semibold">Logout</Text>
     </Pressable>
   );
