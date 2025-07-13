@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { baseQueryWithAsyncAuth } from "@/utils/lib/baseQueryWithAsyncAuth";
 
 export const authApi = createApi({
   reducerPath: 'authApi',
@@ -26,22 +26,19 @@ export const authApi = createApi({
 
 export const api = createApi({
   reducerPath: 'userApi',
-  baseQuery: fetchBaseQuery({
-    baseUrl: 'http://192.168.43.157:8000/api/',
-    prepareHeaders: async (headers) => {
-      const token = await AsyncStorage.getItem('authToken');
-      if (token) {
-        headers.set('Authorization', `Token ${token}`);
-      }
-      return headers;
-    },
-  }),
+  baseQuery: baseQueryWithAsyncAuth,
   endpoints: (build) => ({
     completeProfile: build.mutation({
       query: (profileData) => ({
         url: 'complete-profile/',
         method: 'PUT',
         body: profileData,
+      }),
+    }),
+    logout: build.mutation<void, void>({
+      query: () => ({
+        url: 'logout/',
+        method: 'POST',
       }),
     }),
   }),
@@ -53,5 +50,6 @@ export const {
 } = authApi;
 
 export const {
-  useCompleteProfileMutation
+  useCompleteProfileMutation,
+  useLogoutMutation
 } = api;

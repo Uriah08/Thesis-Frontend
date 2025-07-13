@@ -6,13 +6,16 @@ import { useFocusEffect } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
 import useAuthRedirect from '@/components/hooks/useAuthRedirect';
+import { useLogoutMutation } from '@/store/api';
 
 const Home = () => {
-
+  const [logout] = useLogoutMutation();
   const { checking, user } = useAuthRedirect()
 
   const handleLogout = async () => {
   try {
+    await logout().unwrap()
+    
     await AsyncStorage.removeItem('user');
     await AsyncStorage.removeItem('authToken');
 
