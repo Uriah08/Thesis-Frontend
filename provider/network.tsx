@@ -73,7 +73,7 @@ const Network = ({ children }: { children: React.ReactNode }) => {
       const timer = setTimeout(() => {
         setIsLoading(false);
         dispatch(setHasShownSplash(true));
-      }, 5000);
+      }, 1000);
 
       return () => clearTimeout(timer);
     } else if (hasShownSplash && loaded) {
@@ -92,9 +92,12 @@ const Network = ({ children }: { children: React.ReactNode }) => {
                                                           const printUser = async () => {
                                                             try {
                                                               const storedUser = await AsyncStorage.getItem('user');
-                                                              if (storedUser !== null) {
+                                                              const token = await AsyncStorage.getItem('authToken')
+                                                              if (storedUser !== null && token !== null) {
                                                                 const parsedUser = JSON.parse(storedUser);
                                                                 console.log('User:', parsedUser);
+                                                                console.log('Token:', token);
+                                                                
                                                               } else {
                                                                 console.log('No user found in AsyncStorage.');
                                                               }

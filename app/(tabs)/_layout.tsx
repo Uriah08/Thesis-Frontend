@@ -4,7 +4,7 @@ import {
   HomeIcon,
   FishSymbolIcon,
   BellIcon,
-  UserIcon,
+  SettingsIcon,
 } from 'lucide-react-native';
 import {
   Platform,
@@ -46,6 +46,13 @@ const AppLayout = () => {
       screenOptions={{
         tabBarActiveTintColor: '#155183',
         tabBarInactiveTintColor: '#999',
+        tabBarStyle: {
+          elevation: 0,
+          shadowOpacity: 0,
+          borderTopWidth: 0,
+          backgroundColor: '#fff',
+        },
+        headerShadowVisible: false,
       }}
     >
       <Tabs.Screen
@@ -61,7 +68,7 @@ const AppLayout = () => {
         name="farm"
         options={{
           title: 'Farm',
-          // headerShown: false,
+          headerShown: false,
           tabBarIcon: ({ color, size }) => <FishSymbolIcon color={color} size={size} />,
           tabBarButton: (props) => <CustomTabBarButton {...props} />,
         }}
@@ -98,11 +105,11 @@ const AppLayout = () => {
         }}
       />
       <Tabs.Screen
-        name="profile"
+        name="settings"
         options={{
-          title: 'Profile',
+          title: 'Settings',
           headerShown: false,
-          tabBarIcon: ({ color, size }) => <UserIcon color={color} size={size} />,
+          tabBarIcon: ({ color, size }) => <SettingsIcon color={color} size={size} />,
           tabBarButton: (props) => <CustomTabBarButton {...props} />,
         }}
       />
