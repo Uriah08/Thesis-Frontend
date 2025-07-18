@@ -73,7 +73,7 @@ const Network = ({ children }: { children: React.ReactNode }) => {
       const timer = setTimeout(() => {
         setIsLoading(false);
         dispatch(setHasShownSplash(true));
-      }, 5000);
+      }, 1000);
 
       return () => clearTimeout(timer);
     } else if (hasShownSplash && loaded) {

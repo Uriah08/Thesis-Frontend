@@ -10,6 +10,7 @@ import globalReducer from "@/store";
 import { authApi, api } from "@/store/api";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import Network from "./network";
+import { Provider as PaperProvider } from 'react-native-paper';
 
 import {
   persistStore,
@@ -23,6 +24,7 @@ import {
 } from "redux-persist";
 import { PersistGate } from "redux-persist/integration/react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+// import { Provider as PaperProvider } from 'react-native-paper';
 
 /* REDUX PERSISTENCE */
 const persistConfig = {
@@ -72,9 +74,11 @@ export default function StoreProvider({
   return (
     <Provider store={storeRef.current}>
       <PersistGate loading={null} persistor={persistor}>
-        <Network>
-          {children}
-        </Network>
+        <PaperProvider>
+          <Network>
+            {children}
+          </Network>
+        </PaperProvider>
       </PersistGate>
     </Provider>
   );

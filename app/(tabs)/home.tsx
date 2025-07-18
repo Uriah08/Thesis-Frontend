@@ -53,7 +53,7 @@ const Home = () => {
       );
   
   return (
-    <Pressable className='flex-1 justify-center items-center'>
+    <Pressable className='flex-1 justify-center items-center bg-[#f0f6ff]'>
       <ChevronLeft onPress={() => router.push('/')} style={{ marginTop: 50, marginLeft: 30 }} color="black" size={32} />
       <Text className='text-xl'>Welcome, {user?.first_name}!</Text>
       <Text className='text-xl'>Id, {user?.id} : {user?.email}!</Text>

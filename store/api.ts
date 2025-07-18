@@ -4,7 +4,7 @@ import { baseQueryWithAsyncAuth } from "@/utils/lib/baseQueryWithAsyncAuth";
 export const authApi = createApi({
   reducerPath: 'authApi',
   baseQuery: fetchBaseQuery({
-    baseUrl: 'http://192.168.43.157:8000/api/',
+    baseUrl: 'http://192.168.43.157:8000/api/users/',
   }),
   endpoints: (build) => ({
     login: build.mutation({
@@ -26,7 +26,7 @@ export const authApi = createApi({
 
 export const api = createApi({
   reducerPath: 'userApi',
-  baseQuery: baseQueryWithAsyncAuth,
+  baseQuery: baseQueryWithAsyncAuth('users'),
   endpoints: (build) => ({
     completeProfile: build.mutation({
       query: (profileData) => ({
@@ -41,6 +41,13 @@ export const api = createApi({
         method: 'POST',
       }),
     }),
+    changePassword: build.mutation({
+      query: (passwordData) => ({
+        url: 'change-password/',
+        method: 'PUT',
+        body: passwordData
+      })
+    })
   }),
 });
 
@@ -51,5 +58,6 @@ export const {
 
 export const {
   useCompleteProfileMutation,
-  useLogoutMutation
+  useLogoutMutation,
+  useChangePasswordMutation
 } = api;

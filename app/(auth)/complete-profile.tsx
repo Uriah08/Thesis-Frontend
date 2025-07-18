@@ -49,7 +49,7 @@ const CompleteProfile = () => {
     
     try {
       if (image) {
-      const uploadedUrl = await uploadImageToSupabase(image, setSupabaseLoading);
+      const uploadedUrl = await uploadImageToSupabase(image, 'profile', setSupabaseLoading);
       if (uploadedUrl) imageURL = uploadedUrl;
     }
 

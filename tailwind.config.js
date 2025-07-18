@@ -12,5 +12,8 @@ module.exports = {
       },
     },
   },
-  plugins: [],
+  plugins: ['react-native-reanimated/plugin'],
+  nativewind: {
+    transform: true,
+  },
 }
