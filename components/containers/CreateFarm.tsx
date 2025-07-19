@@ -49,25 +49,34 @@ const CreateFarm = ({setVisible, visible}: DialogsProps) => {
               value={description}
               onChangeText={setDescription}
             />
-            <View className='w-full mt-5 flex items-center justify-center py-10'
+            <View className='w-full mt-5 flex items-center justify-center'
             style={{
               borderStyle: 'dashed',
               borderWidth: 2,
               borderColor: '#d4d4d8',
               borderRadius: 8,
+              paddingVertical: 30
             }}>
               <ImagePlusIcon color={'#d4d4d8'}/>
-              <Text className='text-zinc-300' style={{
-                fontFamily: 'PoppinsBold'
+              <Text style={{
+                fontFamily: 'PoppinsBold',
+                color: '#d4d4d8'
               }}>INSERT FARM IMAGE</Text>
             </View>
             <Text className='text-sm mt-3' style={{
-              fontFamily: 'PoppinsMedium'
+              fontFamily: 'PoppinsSemiBold'
             }}>Private Section</Text>
             <Text className='text-xs text-zinc-400 mb-1' style={{
-              fontFamily: 'PoppinsMedium'
+              fontFamily: 'PoppinsMedium',
+              fontSize: 10,
+              marginBottom: 2
             }}>It is to avoid unauthorized users on your farm.</Text>
-            <View className='h-[1px] w-full bg-zinc-300 mb-3'/>
+            <View style={{
+              height: 1,
+              width: '100%',
+              backgroundColor: '#d4d4d8',
+              marginBottom: 12
+            }}/>
             <View className="relative">
               <TextInput
                 secureTextEntry={!showPassword}
@@ -85,7 +94,11 @@ const CreateFarm = ({setVisible, visible}: DialogsProps) => {
               />
               <Pressable
                 onPress={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-[14px]"
+                style={{
+                  position: 'absolute',
+                  right: 10,
+                  top: 14,
+                }}
               >
                 {showPassword ? <Eye size={20} color="#9ca3af" /> : <EyeClosed size={20} color="#9ca3af" />}
               </Pressable>
@@ -108,7 +121,11 @@ const CreateFarm = ({setVisible, visible}: DialogsProps) => {
               />
               <Pressable
                 onPress={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute right-3 top-[14px]"
+                style={{
+                  position: 'absolute',
+                  right: 10,
+                  top: 14,
+                }}
               >
                 {showConfirmPassword ? (
                   <Eye size={20} color="#9ca3af" />
@@ -117,13 +134,40 @@ const CreateFarm = ({setVisible, visible}: DialogsProps) => {
                 )}
               </Pressable>
             </View>
-            <View className='flex-row mt-5 gap-5 w-full justify-end'>
-              <Pressable onPress={() => setVisible(false)} className='border border-zinc-300 p-2 rounded-lg'>
+            <View
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              marginTop: 20,
+              justifyContent: 'flex-end',
+              alignItems: 'center',
+              gap: 10,
+            }}
+            >
+              <Pressable onPress={() => setVisible(false)} className='border border-zinc-300 p-2 rounded-lg'
+                style={{
+                  borderWidth: 1,
+                  borderColor: '#d4d4d8',
+                  paddingHorizontal: 12,
+                  paddingVertical: 8,
+                  borderRadius: 8,
+                }}>
                 <Text className='text-zinc-500' style={{
                 fontFamily: 'PoppinsRegular'
               }}>Cancel</Text>
               </Pressable>
-              <Pressable onPress={() => handleSubmit()} className='bg-primary py-2 px-3 rounded-lg flex-row items-center gap-2'>
+              <Pressable onPress={() => handleSubmit()}
+                style={{
+                  backgroundColor: '#155183',
+                  paddingHorizontal: 12,
+                  paddingVertical: 8,
+                  borderRadius: 8,
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  gap: 8,
+                }}
+                >
                 <MapPlusIcon color={'#ffffff'} size={15}/>
                 <Text className='text-white' style={{
                 fontFamily: 'PoppinsRegular'
