@@ -40,13 +40,40 @@ const JoinFarm = ({setVisible, visible}: DialogsProps) => {
           value={password}
           onChangeText={setPassword}
         />
-        <View className='flex-row mt-5 gap-5 w-full justify-end'>
-              <Pressable onPress={() => setVisible(false)} className='border border-zinc-300 p-2 rounded-lg'>
+          <View
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              marginTop: 20,
+              justifyContent: 'flex-end',
+              alignItems: 'center',
+              gap: 10,
+            }}
+            >
+              <Pressable onPress={() => setVisible(false)} className='border border-zinc-300 p-2 rounded-lg'
+                style={{
+                  borderWidth: 1,
+                  borderColor: '#d4d4d8',
+                  paddingHorizontal: 12,
+                  paddingVertical: 8,
+                  borderRadius: 8,
+                }}>
                 <Text className='text-zinc-500' style={{
                 fontFamily: 'PoppinsRegular'
               }}>Cancel</Text>
               </Pressable>
-              <Pressable className='bg-primary py-2 px-3 rounded-lg flex-row items-center gap-2'>
+              <Pressable
+                style={{
+                  backgroundColor: '#155183',
+                  paddingHorizontal: 12,
+                  paddingVertical: 8,
+                  borderRadius: 8,
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  gap: 8,
+                }}
+                >
                 <MapPlusIcon color={'#ffffff'} size={15}/>
                 <Text className='text-white' style={{
                 fontFamily: 'PoppinsRegular'
