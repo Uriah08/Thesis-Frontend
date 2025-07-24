@@ -1,4 +1,4 @@
-import { BackHandler, View, Text, ActivityIndicator, ScrollView } from 'react-native'
+import { BackHandler, View, Text, ActivityIndicator } from 'react-native'
 import { useCallback } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import { useGetWeatherForecastQuery } from '@/store/api';
