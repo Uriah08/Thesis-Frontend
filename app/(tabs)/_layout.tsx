@@ -5,6 +5,7 @@ import {
   FishSymbolIcon,
   BellIcon,
   SettingsIcon,
+  CameraIcon,
 } from 'lucide-react-native';
 import {
   Platform,
@@ -15,6 +16,33 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import useAuthRedirect from '@/components/hooks/useAuthRedirect';
+
+const CameraTabBarButton = ({ children, onPress }: any) => {
+  return (
+    <TouchableOpacity
+      onPress={onPress}
+      style={{
+        top: -10,
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
+      <View
+        style={{
+          width: 60,
+          height: 60,
+          borderRadius: 30,
+          backgroundColor: '#155183',
+          justifyContent: 'center',
+          alignItems: 'center',
+          elevation: 5,
+        }}
+      >
+        {children}
+      </View>
+    </TouchableOpacity>
+  );
+};
 
 const CustomTabBarButton = (props: any) => {
   const { checking } = useAuthRedirect()
@@ -81,6 +109,16 @@ const AppLayout = () => {
           headerShown: false,
           tabBarIcon: ({ color, size }) => <FishSymbolIcon color={color} size={size} />,
           tabBarButton: (props) => <CustomTabBarButton {...props} />,
+        }}
+      />
+      <Tabs.Screen
+        name="scan"
+        options={{
+          title: 'Scan',
+          headerShown: false,
+          tabBarIcon: ({ color, size }) => <CameraIcon color={'#ffffff'} size={28} />,
+          tabBarButton: (props) => <CameraTabBarButton {...props} />,
+          tabBarLabel: () => null
         }}
       />
       <Tabs.Screen
