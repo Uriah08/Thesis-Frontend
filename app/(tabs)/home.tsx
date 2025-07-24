@@ -1,15 +1,14 @@
-import { BackHandler, View, Text, ActivityIndicator } from 'react-native'
+import { BackHandler, View, Text, ActivityIndicator, ScrollView } from 'react-native'
 import { useCallback } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
-import useAuthRedirect from '@/components/hooks/useAuthRedirect';
 import { useGetWeatherForecastQuery } from '@/store/api';
 import WeatherIcon from '@/components/containers/weather/WeatherIcon';
 import { MapPinCheckInsideIcon } from 'lucide-react-native';
 import WeatherDashboardBoxes from '@/components/containers/weather/WeatherDashboardBoxes';
 import WeatherForecast from '@/components/containers/weather/WeatherForecast';
+import WeatherAlert from '@/components/containers/weather/WeatherAlert';
 
 const Home = () => {
-  const { user } = useAuthRedirect()
   const { data, isLoading } = useGetWeatherForecastQuery();
 
   useFocusEffect(
@@ -42,17 +41,12 @@ const Home = () => {
           °C</Text></Text>
         </View>
         </View>
-
+        <WeatherAlert pop={data?.first_item.pop} wind_speed={data?.first_item.wind_speed} clouds={data?.first_item.clouds}/>
         <WeatherDashboardBoxes pop={data?.first_item.pop} wind_speed={data?.first_item.wind_speed} clouds={data?.first_item.clouds}/>
-
-        <View className='p-5'>
-            <Text className='text-2xl' style={{ fontFamily: 'PoppinsSemiBold'}}>Hello <Text className='text-primary'>{user?.username && user?.username[0].toUpperCase() + user.username.slice(1)}!</Text></Text>
-          <View className='flex-row items-center'>
+        <View className='flex-row items-center justify-end px-5 mt-5'>
             <MapPinCheckInsideIcon size={15} color={'#6b7280'}/>
             <Text className='text-sm text-gray-500 ml-1' style={{ fontFamily: 'PoppinsRegular'}}>Lives in {data?.city.name}, {data?.city.country}</Text>
           </View>
-        </View>
-
         <WeatherForecast future_forecast={data?.future_forecast ?? []}/>
     </View>
   );
