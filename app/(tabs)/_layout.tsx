@@ -12,9 +12,13 @@ import {
   Text,
   TouchableNativeFeedback,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
+import useAuthRedirect from '@/components/hooks/useAuthRedirect';
 
 const CustomTabBarButton = (props: any) => {
+  const { checking } = useAuthRedirect()
+  
   const { children, onPress, ...rest } = props;
   if (Platform.OS === 'android') {
     return (
@@ -32,6 +36,12 @@ const CustomTabBarButton = (props: any) => {
       </View>
     );
   }
+
+  if (checking) return (
+          <View className='flex h-full w-full items-center justify-center bg-white'>
+            <ActivityIndicator size={50}/>
+          </View>
+        );
 
   return (
     <TouchableOpacity onPress={onPress} style={{ flex: 1 }} {...rest}>
@@ -77,7 +87,7 @@ const AppLayout = () => {
         name="notification"
         options={{
           title: 'Notifications',
-          // headerShown: false,
+          headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <View style={{ position: 'relative' }}>
               <BellIcon color={color} size={size} />

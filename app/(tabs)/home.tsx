@@ -1,38 +1,16 @@
-import { Text, Pressable, BackHandler, View, ActivityIndicator, Image } from 'react-native'
-import { router } from 'expo-router';
+import { BackHandler, View, Text, ActivityIndicator } from 'react-native'
 import { useCallback } from 'react';
-import { ChevronLeft } from 'lucide-react-native';
 import { useFocusEffect } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import Toast from 'react-native-toast-message';
 import useAuthRedirect from '@/components/hooks/useAuthRedirect';
-import { useLogoutMutation } from '@/store/api';
+import { useGetWeatherForecastQuery } from '@/store/api';
+import WeatherIcon from '@/components/containers/weather/WeatherIcon';
+import { MapPinCheckInsideIcon } from 'lucide-react-native';
+import WeatherDashboardBoxes from '@/components/containers/weather/WeatherDashboardBoxes';
+import WeatherForecast from '@/components/containers/weather/WeatherForecast';
 
 const Home = () => {
-  const [logout] = useLogoutMutation();
-  const { checking, user } = useAuthRedirect()
-
-  const handleLogout = async () => {
-  try {
-    await logout().unwrap()
-    
-    await AsyncStorage.removeItem('user');
-    await AsyncStorage.removeItem('authToken');
-
-    Toast.show({
-      type: 'success',
-      text1: 'Logged out successfully!',
-    });
-
-    router.replace('/login');
-  } catch (error) {
-    console.error('Logout error:', error);
-    Toast.show({
-      type: 'error',
-      text1: 'Failed to log out.',
-    });
-  }
-};
+  const { user } = useAuthRedirect()
+  const { data, isLoading } = useGetWeatherForecastQuery();
 
   useFocusEffect(
     useCallback(() => {
@@ -46,30 +24,37 @@ const Home = () => {
     }, [])
   );
 
-  if (checking) return (
-        <View className='flex-1 items-center justify-center'>
-          <ActivityIndicator size={50}/>
-        </View>
-      );
+  if (isLoading) return (
+    <View className='flex h-full w-full items-center justify-center bg-white'>
+      <ActivityIndicator size={50}/>
+    </View>
+  );
   
   return (
-    <Pressable className='flex-1 justify-center items-center bg-[#f0f6ff]'>
-      <ChevronLeft onPress={() => router.push('/')} style={{ marginTop: 50, marginLeft: 30 }} color="black" size={32} />
-      <Text className='text-xl'>Welcome, {user?.first_name}!</Text>
-      <Text className='text-xl'>Id, {user?.id} : {user?.email}!</Text>
-      <View className="border-[3px] border-primary mt-10 rounded-full p-1 relative">
-                <Image
-                  source={
-                    user?.profile_picture
-                      ? { uri: user?.profile_picture }
-                      : require('@/assets/images/default-profile.png')
-                  }
-                  style={{ width: 80, height: 80, borderRadius: 999 }}
-                  resizeMode="cover"
-                />
-              </View>
-      <Text onPress={() => handleLogout()} className="text-red-500 font-semibold">Logout</Text>
-    </Pressable>
+    <View className='flex-1 bg-white'>
+          <View className='flex-row justify-between items-center mt-14 p-5'>
+          <Text className='text-5xl' style={{
+          fontFamily: 'PoppinsSemiBold'
+        }}>To<Text className='text-primary'>You</Text></Text>
+        <View className='flex-col flex justify-center'>
+          <WeatherIcon iconCode={data?.first_item.icon} style={{ width: 25, height: 25}}/>
+          <Text style={{ fontFamily: 'PoppinsMedium' }} className='text-base text-primary'>{Math.round(data?.first_item.temperature ?? 0)}<Text className='text-xs' style={{ fontFamily: 'PoppinsRegular' }}>
+          °C</Text></Text>
+        </View>
+        </View>
+
+        <WeatherDashboardBoxes pop={data?.first_item.pop} wind_speed={data?.first_item.wind_speed} clouds={data?.first_item.clouds}/>
+
+        <View className='p-5'>
+            <Text className='text-2xl' style={{ fontFamily: 'PoppinsSemiBold'}}>Hello <Text className='text-primary'>{user?.username && user?.username[0].toUpperCase() + user.username.slice(1)}!</Text></Text>
+          <View className='flex-row items-center'>
+            <MapPinCheckInsideIcon size={15} color={'#6b7280'}/>
+            <Text className='text-sm text-gray-500 ml-1' style={{ fontFamily: 'PoppinsRegular'}}>Lives in {data?.city.name}, {data?.city.country}</Text>
+          </View>
+        </View>
+
+        <WeatherForecast future_forecast={data?.future_forecast ?? []}/>
+    </View>
   );
 }
 

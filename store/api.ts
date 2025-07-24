@@ -1,6 +1,31 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { baseQueryWithAsyncAuth } from "@/utils/lib/baseQueryWithAsyncAuth";
 
+export type WeatherData = {
+  city: {
+    country: string;
+    name: string;
+  };
+  first_item: {
+    datetime: string;
+    description: string;
+    icon: string;
+    temperature: number;
+    pop: number;
+    wind_speed: number;
+    clouds: number;
+  };
+  future_forecast: {
+    datetime: string;
+    description: string;
+    icon: string;
+    temperature: number;
+    pop: number;
+    wind_speed: number;
+    clouds: number;
+  }[];
+};
+
 export const authApi = createApi({
   reducerPath: 'authApi',
   baseQuery: fetchBaseQuery({
@@ -50,6 +75,23 @@ export const api = createApi({
     })
   }),
 });
+
+export const weatherApi = createApi({
+  reducerPath: 'weatherApi',
+  baseQuery: baseQueryWithAsyncAuth('weather'),
+  endpoints: (build) => ({
+    getWeatherForecast: build.query<WeatherData, void>({
+      query: () => ({
+        url: 'forecast/',
+        method: 'GET',
+      })
+    }),
+  }),
+})
+
+export const {
+  useGetWeatherForecastQuery
+} = weatherApi;
 
 export const {
   useLoginMutation,

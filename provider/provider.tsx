@@ -7,10 +7,11 @@ import {
   Provider,
 } from "react-redux";
 import globalReducer from "@/store";
-import { authApi, api } from "@/store/api";
+import { authApi, api, weatherApi } from "@/store/api";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import Network from "./network";
 import { Provider as PaperProvider } from 'react-native-paper';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import {
   persistStore,
@@ -36,6 +37,7 @@ const rootReducer = combineReducers({
   global: globalReducer,
   [authApi.reducerPath]: authApi.reducer,
   [api.reducerPath]: api.reducer,
+  [weatherApi.reducerPath]: weatherApi.reducer,
 });
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
@@ -48,7 +50,7 @@ export const makeStore = () =>
         serializableCheck: {
           ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
         },
-      }).concat(api.middleware).concat(authApi.middleware)
+      }).concat(api.middleware).concat(authApi.middleware).concat(weatherApi.middleware),
   });
 
 /* REDUX TYPES */
@@ -74,11 +76,13 @@ export default function StoreProvider({
   return (
     <Provider store={storeRef.current}>
       <PersistGate loading={null} persistor={persistor}>
-        <PaperProvider>
-          <Network>
-            {children}
-          </Network>
-        </PaperProvider>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <PaperProvider>
+            <Network>
+              {children}
+            </Network>
+          </PaperProvider>
+        </GestureHandlerRootView>
       </PersistGate>
     </Provider>
   );
