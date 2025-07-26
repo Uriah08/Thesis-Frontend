@@ -1,4 +1,4 @@
-import { View, Text, Pressable, Image } from 'react-native'
+import { View, Text, Pressable, Image, ScrollView } from 'react-native'
 import React, { useState } from 'react'
 import { MapPlus, Plus } from 'lucide-react-native';
 import Animated, {
@@ -6,8 +6,9 @@ import Animated, {
   useAnimatedStyle,
   withTiming,
 } from 'react-native-reanimated'
-import CreateFarm from '@/components/containers/CreateFarm';
-import JoinFarm from '@/components/containers/JoinFarm';
+import CreateFarm from '@/components/containers/dialogs/CreateFarm';
+import JoinFarm from '@/components/containers/dialogs/JoinFarm';
+import GetFarm from '@/components/containers/farm/GetFarm';
 
 const Farm = () => {
   const [active, setActive] = useState(false);
@@ -59,9 +60,13 @@ const Farm = () => {
 
   return (
     <View className='flex-1 bg-white'>
-      <Text className='mt-10 text-3xl p-5' style={{
+      <Text className='mt-10 text-3xl pt-5 px-5' style={{
         fontFamily: 'PoppinsBold'
       }}>Farms</Text>
+
+      <ScrollView className='mt-5'>
+        <GetFarm/>
+      </ScrollView>
 
       <CreateFarm visible={createVisible} setVisible={setCreateVisible}/>
       <JoinFarm visible={joinVisible} setVisible={setJoinVisible}/>

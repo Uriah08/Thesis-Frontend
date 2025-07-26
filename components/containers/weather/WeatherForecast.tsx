@@ -145,7 +145,7 @@ const WeatherForecast = ({ future_forecast }: FutureForecast) => {
 
       <BottomDrawer ref={drawerRef} onChange={(open) => setIsDrawerOpen(open)}>
         {selectedItem ? (
-          <View style={{ alignItems: 'center', padding: 16, zIndex: 99999 }}>
+          <View style={{ alignItems: 'center', padding: 16, zIndex: 99999, marginBottom: 18 }}>
             <Text style={{ fontSize: 18, fontWeight: 'bold' }}>
               {new Date(selectedItem.datetime).toLocaleDateString('en-US', { weekday: 'long' })}
             </Text>

@@ -1,30 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { baseQueryWithAsyncAuth } from "@/utils/lib/baseQueryWithAsyncAuth";
-
-export type WeatherData = {
-  city: {
-    country: string;
-    name: string;
-  };
-  first_item: {
-    datetime: string;
-    description: string;
-    icon: string;
-    temperature: number;
-    pop: number;
-    wind_speed: number;
-    clouds: number;
-  };
-  future_forecast: {
-    datetime: string;
-    description: string;
-    icon: string;
-    temperature: number;
-    pop: number;
-    wind_speed: number;
-    clouds: number;
-  }[];
-};
+import { Farm, WeatherData } from "@/utils/types";
 
 export const authApi = createApi({
   reducerPath: 'authApi',
@@ -88,6 +64,43 @@ export const weatherApi = createApi({
     }),
   }),
 })
+
+export const farmApi = createApi({
+  reducerPath: 'farmApi',
+  baseQuery: baseQueryWithAsyncAuth('farms'),
+  tagTypes: ['Farm'],
+  endpoints: (build) => ({
+    createFarm: build.mutation({
+      query: (farmData) => ({
+        url: 'create/',
+        method: 'POST',
+        body: farmData
+      }),
+      invalidatesTags: ['Farm']
+    }),
+    joinFarm: build.mutation({
+      query: (farmData) => ({
+        url: 'join/',
+        method: 'POST',
+        body: farmData
+      }),
+      invalidatesTags: ['Farm']
+    }),
+    getFarms: build.query<Farm[], void>({
+      query: () => ({
+        url: 'mine/',
+        method: 'GET',
+      }),
+      providesTags: ['Farm']
+    })
+  }),
+})
+
+export const {
+  useCreateFarmMutation,
+  useJoinFarmMutation,
+  useGetFarmsQuery
+} = farmApi
 
 export const {
   useGetWeatherForecastQuery
