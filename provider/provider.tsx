@@ -7,7 +7,7 @@ import {
   Provider,
 } from "react-redux";
 import globalReducer from "@/store";
-import { authApi, api, weatherApi } from "@/store/api";
+import { authApi, api, weatherApi, farmApi } from "@/store/api";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import Network from "./network";
 import { Provider as PaperProvider } from 'react-native-paper';
@@ -38,6 +38,7 @@ const rootReducer = combineReducers({
   [authApi.reducerPath]: authApi.reducer,
   [api.reducerPath]: api.reducer,
   [weatherApi.reducerPath]: weatherApi.reducer,
+  [farmApi.reducerPath]: farmApi.reducer
 });
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
@@ -50,7 +51,11 @@ export const makeStore = () =>
         serializableCheck: {
           ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
         },
-      }).concat(api.middleware).concat(authApi.middleware).concat(weatherApi.middleware),
+      })
+      .concat(api.middleware)
+      .concat(authApi.middleware)
+      .concat(weatherApi.middleware)
+      .concat(farmApi.middleware),
   });
 
 /* REDUX TYPES */

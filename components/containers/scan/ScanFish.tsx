@@ -8,11 +8,11 @@ const ScanFish = () => {
   const [permission, requestPermission] = useCameraPermissions();
   const [isCameraOpen, setIsCameraOpen] = useState(false); // NEW STATE
 
-  if (!permission) return <View />;
+  if (!permission) return <View className='flex-1 bg-white'/>;
 
   if (!permission.granted) {
     return (
-      <View>
+      <View className='flex-1 bg-white'>
         <Text>We need your permission to show the camera</Text>
         <Button onPress={requestPermission} title="Grant permission" />
       </View>
