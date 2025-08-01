@@ -1,11 +1,11 @@
-import { Tabs } from 'expo-router';
+import { Tabs, usePathname } from 'expo-router';
 import React from 'react';
 import {
   HomeIcon,
   FishSymbolIcon,
   BellIcon,
   SettingsIcon,
-  CameraIcon,
+  Aperture,
 } from 'lucide-react-native';
 import {
   Platform,
@@ -16,11 +16,22 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import useAuthRedirect from '@/components/hooks/useAuthRedirect';
+import { useDispatch } from 'react-redux';
+import { setScanTabPressed } from '@/store';
 
 const CameraTabBarButton = ({ children, onPress }: any) => {
+  const pathname = usePathname()
+  const dispatch = useDispatch();
+
+  const handlePress = () => {
+    if (pathname === '/scan') {
+      dispatch(setScanTabPressed(true));
+    }
+    onPress?.();
+  };
   return (
     <TouchableOpacity
-      onPress={onPress}
+      onPress={handlePress}
       style={{
         top: -10,
         justifyContent: 'center',
@@ -116,7 +127,7 @@ const AppLayout = () => {
         options={{
           title: 'Scan',
           headerShown: false,
-          tabBarIcon: ({ color, size }) => <CameraIcon color={'#ffffff'} size={28} />,
+          tabBarIcon: ({ color, size }) => <Aperture color={'#ffffff'} size={28} />,
           tabBarButton: (props) => <CameraTabBarButton {...props} />,
           tabBarLabel: () => null
         }}

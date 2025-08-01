@@ -1,46 +1,32 @@
 // store/globalSlice.ts
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 type GlobalState = {
   hasShownSplash: boolean;
-  authToken: string | null;
-  user: any | null;
+  scanTabPressed: boolean;
 };
 
 const initialState: GlobalState = {
   hasShownSplash: false,
-  authToken: null,
-  user: null,
+  scanTabPressed: false,
 };
 
 export const globalSlice = createSlice({
   name: "global",
   initialState,
   reducers: {
-    setHasShownSplash(state, action) {
+    setHasShownSplash(state, action: PayloadAction<boolean>) {
       state.hasShownSplash = action.payload;
     },
-    setAuthToken(state, action) {
-      state.authToken = action.payload;
-    },
-    setUser(state, action) {
-      state.user = {
-        ...(state.user || {}),
-        ...action.payload,
-      };
-    },
-    logout(state) {
-      state.authToken = null;
-      state.user = null;
+    setScanTabPressed(state, action: PayloadAction<boolean>) {
+      state.scanTabPressed = action.payload;
     },
   },
 });
 
 export const {
   setHasShownSplash,
-  setAuthToken,
-  setUser,
-  logout,
+  setScanTabPressed,
 } = globalSlice.actions;
 
 export default globalSlice.reducer;
