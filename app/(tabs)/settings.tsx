@@ -108,7 +108,7 @@ const Settings = () => {
                 Account Settings
             </Text>
             )}
-            {i === 3 && (
+            {i === 2 && (
             <Text
                 className="text-zinc-500 text-sm mt-10"
                 style={{
@@ -122,10 +122,11 @@ const Settings = () => {
             <Pressable
             onPress={() => router.push(item.route as any)}
             className="flex flex-row items-center"
+            android_ripple={{ color: '#d3d3d3', borderless: false }}
             style={{
                 justifyContent: 'space-between',
                 borderTopWidth: 1,
-                borderBottomWidth: (item.label === 'FAQ' || item.label === 'About') ? 1 : 0,
+                borderBottomWidth: (item.label === 'Change Password' || item.label === 'About') ? 1 : 0,
                 borderColor: '#e8e8e8',
                 paddingVertical: 20,
                 paddingLeft: 10,

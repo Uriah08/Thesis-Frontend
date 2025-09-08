@@ -1,5 +1,16 @@
-import { BackHandler, View, Text, ActivityIndicator, ScrollView, Pressable } from 'react-native'
-import { useCallback, useRef, useState } from 'react';
+import { 
+  BackHandler, 
+  View, 
+  Text, 
+  ActivityIndicator, 
+  ScrollView, 
+  Pressable 
+} from 'react-native'
+import { 
+  useCallback, 
+  useRef, 
+  useState 
+} from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import { useGetWeatherForecastQuery } from '@/store/api';
 import WeatherIcon from '@/components/containers/weather/WeatherIcon';
@@ -152,13 +163,15 @@ const Home = () => {
           </View>
 
         <View className='h-80'></View>
-        {/* ########################################WeatherForeCAST######################################## */}
+
+
+
+        {/* ########################################       WEATHER FORECAST      ######################################## */}
+
 
 
         <View style={{ 
-        marginBottom: 10, 
-        // borderTopWidth: 1, 
-        // borderTopColor: '#d4d4d8', 
+        marginBottom: 10,  
         paddingTop: 8 
         }} className="gap-3 bg-white">
         <Text className="text-lg px-5" style={{ fontFamily: 'PoppinsSemiBold' }}>
